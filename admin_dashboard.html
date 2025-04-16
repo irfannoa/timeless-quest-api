@@ -93,7 +93,7 @@
 </div>
 <script>
   function loadProducts() {
-    fetch("get_products.php")
+    fetch("/api/getProducts")
       .then(res => res.json())
       .then(data => {
         const tbody = document.querySelector("#productTable tbody");
@@ -127,7 +127,7 @@
   return;
 }
 
-    fetch("update_product.php", {
+    fetch("/api/updateProduct", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -154,7 +154,7 @@
   function deleteProduct(id) {
     if (confirm("Are you sure you want to delete this product?")) {
       // Send request to delete the product
-      fetch("delete_product.php", {
+      fetch("/api/deleteProduct", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -187,7 +187,7 @@
       quantity: document.getElementById("productQty").value
     };
 
-    fetch("add_product.php", {
+    fetch("/api/addProduct", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -207,7 +207,7 @@
     .catch(error => console.error("Error:", error));
   });
     function loadOrders() {
-  fetch("get_orders.php")
+  fetch("/api/getOrders")
     .then(res => res.json())
     .then(data => {
       const tbody = document.querySelector("#orderTable tbody");
@@ -242,7 +242,7 @@
             }
 
             // Send status update to backend
-            fetch("update_order_status.php", {
+            fetch("/api/updateOrderStatus", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json"
