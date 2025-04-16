@@ -1,0 +1,294 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <title>Admin Dashboard - Timeless Quest</title>
+      <link rel="icon" href="images/favicon.png" type="image/png">
+      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="styles.css" />
+      <style>
+        .menu-toggle {
+          display: none;
+          font-size: 28px;
+          cursor: pointer;
+          color: white;
+          z-index: 1100;
+          margin-left: auto;
+          transition: color 0.3s ease;
+        }
+
+        .admin-section {
+          margin-bottom: 40px;
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 10px;
+        }
+
+        table, th, td {
+          border: 1px solid #ccc;
+          padding: 10px;
+          text-align: left;
+        }
+
+        input, select, button {
+          padding: 8px;
+          margin: 5px 0;
+          font-family: 'Poppins', sans-serif;
+        }
+
+        button {
+          cursor: pointer;
+          border-radius: 5px;
+          border: 1px solid #111;
+          background-color: #333;
+          color: white;
+        }
+
+        button:hover {
+          background-color: #555;
+        }
+      </style>
+    </head>
+    <body>
+      <main style="padding: 60px 10%; font-family: 'Poppins', sans-serif;">
+        <h1>Admin Dashboard</h1>
+
+        <div class="admin-section">
+      <h2>Product Management</h2>
+      <form id="productForm">
+        <input type="text" id="productName" placeholder="Product Name" required />
+        <input type="text" id="productPrice" placeholder="Price" required />
+        <input type="text" id="productImage" placeholder="Image URL" required />
+        <input type="text" id="productDesc" placeholder="Description" required />
+        <input type="number" id="productQty" placeholder="Quantity" min="0" required />
+        <button type="submit">Add Product</button>
+      </form>
+      <table id="productTable">
+        <thead>
+          <tr>
+            <th>Name</th><th>Price</th><th>Qty</th><th>Status</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+          
+<div class="admin-section">
+  <h2>Order Details</h2>
+  <table id="orderTable">
+    <thead>
+      <tr>
+        <th>First Name</th><th>Last Name</th><th>Phone</th><th>Email</th>
+        <th>Address 1</th><th>Address 2</th><th>Country</th><th>State</th><th>City</th><th>Postcode</th><th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Order data will be inserted here dynamically -->
+    </tbody>
+  </table>
+</div>
+<script>
+  function loadProducts() {
+    fetch("get_products.php")
+      .then(res => res.json())
+      .then(data => {
+        const tbody = document.querySelector("#productTable tbody");
+        tbody.innerHTML = "";
+
+        data.forEach(product => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${product.name}</td>
+            <td>${product.price}</td>
+            <td>${product.quantity}</td>
+            <td>${product.status || 'Active'}</td>
+            <td>
+              <button onclick="editProduct('${product.product_id}')">Edit</button>
+              <button onclick="deleteProduct('${product.product_id}')">Delete</button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+      })
+      .catch(err => {
+        console.error("Failed to load products:", err);
+      });
+  }
+
+  function editProduct(id) {
+    const newQuantity = prompt("Enter new quantity:");
+
+    if (isNaN(newQuantity) || parseInt(newQuantity) < 0) {
+  alert("Please enter a valid number.");
+  return;
+}
+
+    fetch("update_product.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        id: id,
+        quantity: parseInt(newQuantity)
+      })
+    })
+    .then(res => res.json())
+    .then(response => {
+      if (response.message) {
+        alert(response.message);
+        loadProducts(); // Refresh updated table
+      } else {
+        alert("Error: " + response.error);
+      }
+    })
+    .catch(err => {
+      console.error("Update failed:", err);
+    });
+  }
+
+  function deleteProduct(id) {
+    if (confirm("Are you sure you want to delete this product?")) {
+      // Send request to delete the product
+      fetch("delete_product.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ id: id })
+      })
+      .then(res => res.json())
+      .then(response => {
+        if (response.message) {
+          alert(response.message);
+          loadProducts(); // Refresh the table after deletion
+        } else {
+          alert("Error: " + response.error);
+        }
+      })
+      .catch(err => {
+        console.error("Delete failed:", err);
+      });
+    }
+  }
+
+  document.getElementById("productForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const data = {
+      name: document.getElementById("productName").value,
+      price: document.getElementById("productPrice").value,
+      image: document.getElementById("productImage").value,
+      description: document.getElementById("productDesc").value,
+      quantity: document.getElementById("productQty").value
+    };
+
+    fetch("add_product.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(response => {
+      if (response.message) {
+        alert(response.message);
+        document.getElementById("productForm").reset();
+        loadProducts(); // Refresh table
+      } else {
+        alert("Error: " + response.error);
+      }
+    })
+    .catch(error => console.error("Error:", error));
+  });
+    function loadOrders() {
+  fetch("get_orders.php")
+    .then(res => res.json())
+    .then(data => {
+      const tbody = document.querySelector("#orderTable tbody");
+      tbody.innerHTML = "";
+
+      data.forEach(order => {
+        const row = document.createElement("tr");
+
+        const statusCell = document.createElement("td");
+
+        if (order.status === "Completed") {
+          // Show status as plain text if it's already completed
+          statusCell.textContent = order.status;
+        } else {
+          // Create a dropdown to change status if not completed
+          const select = document.createElement("select");
+
+          ["Pending", "Processing", "Shipped", "Completed"].forEach(status => {
+            const option = document.createElement("option");
+            option.value = status;
+            option.textContent = status;
+            if (status === order.status) option.selected = true;
+            select.appendChild(option);
+          });
+
+          select.addEventListener("change", function () {
+            const confirmed = confirm(`Are you sure you want to change status to "${this.value}"?`);
+            if (!confirmed) {
+              // Revert if canceled
+              this.value = order.status;
+              return;
+            }
+
+            // Send status update to backend
+            fetch("update_order_status.php", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                order_id: order.order_id,
+                status: this.value
+              })
+            })
+            .then(res => res.json())
+            .then(response => {
+              if (response.message) {
+                alert(response.message);
+                loadOrders(); // Refresh table
+              } else {
+                alert("Error: " + response.error);
+              }
+            })
+            .catch(err => {
+              console.error("Status update failed:", err);
+            });
+          });
+
+          statusCell.appendChild(select);
+        }
+
+        row.innerHTML = `
+          <td>${order.first_name}</td>
+          <td>${order.last_name}</td>
+          <td>${order.phone}</td>
+          <td>${order.email}</td>
+          <td>${order.address1}</td>
+          <td>${order.address2}</td>
+          <td>${order.country}</td>
+          <td>${order.state}</td>
+          <td>${order.city}</td>
+          <td>${order.postcode}</td>
+        `;
+        row.appendChild(statusCell);
+        tbody.appendChild(row);
+      });
+    })
+    .catch(err => console.error("Failed to load orders:", err));
+}
+document.addEventListener("DOMContentLoaded", () => {
+  loadProducts();
+  loadOrders();
+});
+</script>

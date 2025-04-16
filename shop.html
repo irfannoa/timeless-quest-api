@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shop - Timeless Quest</title>
+
+  <link rel="icon" href="images/favicon.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.0.0/dist/supabase.min.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .menu-toggle {
+      display: none;
+      font-size: 28px;
+      cursor: pointer;
+      color: white;
+      z-index: 1100;
+      margin-left: auto;
+      transition: color 0.3s ease;
+    }
+
+    #shopProducts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px 10% 40px;
+}
+
+    .product-card {
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-card h2 {
+      margin-top: 10px; 
+      margin-bottom: 5px;
+    }
+
+    .product-card p {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    .buy-button {
+      background-color: #111;
+      color: white;
+      padding: 10px 0;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      margin-top: auto;
+      width: 100%;
+    }
+
+    #floatingCartBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #111;
+      color: white;
+      font-size: 22px;
+      padding: 14px 18px;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 9999;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    #cartPopup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #cartPopup iframe {
+      width: 100%;
+      height: 400px;
+      border: none;
+    }
+      .buy-button.disabled {
+  background-color: #ccc;
+  color: #777;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+  </style>
+</head>
+<body>
+
+  <header id="mainHeader">
+    <img src="images/time-logo-white.png" alt="Timeless Quest Logo" class="logo" id="logoImage">
+    <div class="menu-toggle" id="menuToggle">☰</div>
+    <nav id="mainNav">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="about-us.html">About Us</a>
+      <a href="https://linktr.ee/TimelessQuest" target="_blank" class="contact-button show-on-mobile">Stay Lit →</a>
+    </nav>
+    <a href="https://linktr.ee/TimelessQuest" target="_blank" class="contact-button mobile-hide">Stay Lit →</a>
+  </header>
+
+  <div class="spacer"></div>
+
+  <main style="padding: 0 10%; margin-top: 40px;">
+  <h1 style="font-size: 36px; font-weight: 700; margin-bottom: 10px;">All Products</h1>
+  <p style="font-size: 16px; color: #333;">No Products Yet...</p>
+</main>
+
+  <section id="shopProducts"></section>
+
+  <div id="floatingCartBtn" onclick="openCartPopup()">🛒</div>
+
+  <div id="cartPopup">
+    <div>
+      <button onclick="closeCartPopup()" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer;">✖</button>
+      <div id="cartFrame"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div style="margin-bottom: 20px;">
+      <select style="padding: 8px 16px; border-radius: 999px; border: 1px solid #111; font-size: 14px; cursor: pointer;">
+        <option value="MYR">MYR</option>
+        <option value="USD">USD</option>
+        <option value="EUR">EUR</option>
+      </select>
+    </div>
+    <p style="margin: 5px 0;">© Timeless Quest 2025</p>
+    <p style="margin-top: 10px; font-weight: 500;">
+      <a href="FAQ.html" style="color: #111; text-decoration: none;">FAQ</a> |
+      <a href="srr.html" style="color: #111; text-decoration: none;">Shipping, Return & Refund Policy</a> |
+      <a href="T&C.html" style="color: #111; text-decoration: none;">Terms and Conditions</a> |
+      <a href="Privacy_policy.html" style="color: #111; text-decoration: none;">Privacy Policy</a>
+    </p>
+  </footer> 
+
+  
+  <script>
+  const SUPABASE_URL = 'https://fbnvobfijhajaafcjvmu.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZibnZvYmZpamhhamFhZmNqdm11Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ2MzMxODEsImV4cCI6MjA2MDIwOTE4MX0.aSKexeuxVT7HFFAZB48-cf2ImE-KrBR5uy95ANDfgGo';
+
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      
+let userId = localStorage.getItem('guest_user_id');
+
+if (!userId) {
+  userId = crypto.randomUUID();
+  localStorage.setItem('guest_user_id', userId);
+}
+let cartItems = [];
+
+async function loadCart() {
+  const { data, error } = await supabase
+    .from('cart')
+    .select('*, products(*)')
+    .eq('user_id', userId);
+
+  if (error) {
+    console.error('Error loading cart:', error.message);
+  } else {
+    cartItems = data.map(item => ({
+      id: item.product_id,
+      name: item.products.name,
+      price: item.products.price,
+      quantity: item.quantity,
+      available: item.products.quantity,
+    }));
+  }
+}
+
+  async function openCartPopup() {
+  await loadCart(); // fetch latest cart from DB
+
+  const cartPopup = document.getElementById("cartPopup");
+  const cartFrame = document.getElementById("cartFrame");
+
+  const html = `
+    <h2>🛒 Your Cart</h2>
+    <div>
+      ${cartItems.map(item => `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0;">
+          <span>${item.name}</span>
+          <div style="display: flex; align-items: center; gap: 5px;">
+            <button onclick="changeQuantity('${item.id}', 'decrease')">-</button>
+            <span>${item.quantity}</span>
+            <button onclick="changeQuantity('${item.id}', 'increase')">+</button>
+          </div>
+          <strong>RM ${(item.price * item.quantity).toFixed(2)}</strong>
+        </div>
+      `).join('')}
+    </div>
+    <hr />
+    <div style="text-align: right; font-weight: bold;">
+      Total: RM ${cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)}
+    </div>
+    <button style="margin-top: 20px; width: 100%; padding: 10px; background-color: #111; color: white; border: none; border-radius: 8px;" onclick="parent.checkout()">Checkout</button>
+  `;
+
+  cartFrame.innerHTML = html;
+  cartPopup.style.display = 'flex';
+}
+
+  function closeCartPopup() {
+    document.getElementById("cartPopup").style.display = "none";
+  }
+
+  async function addToCart(product) {
+  const { data: existing } = await supabase
+    .from('cart')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('product_id', product.id)
+    .single();
+
+  if (existing) {
+    if (existing.quantity < product.quantity) {
+      await supabase
+        .from('cart')
+        .update({ quantity: existing.quantity + 1 })
+        .eq('cart_id', existing.cart_id);
+    } else {
+      alert("Sorry, we don't have enough stock for this product.");
+      return;
+    }
+  } else {
+    await supabase.from('cart').insert([{
+      user_id: userId,
+      product_id: product.id,
+      quantity: 1
+    }]);
+  }
+
+  alert(`${product.name} added to cart!`);
+}
+
+async function changeQuantity(productId, action) {
+  const { data: cartItem, error } = await supabase
+    .from('cart')
+    .select('*, products(*)')
+    .eq('user_id', userId)
+    .eq('product_id', productId)
+    .single();
+
+  if (error || !cartItem) return;
+
+  let newQty = cartItem.quantity;
+  const maxQty = cartItem.products.quantity;
+
+  if (action === 'increase') {
+    if (newQty < maxQty) newQty++;
+    else {
+      alert("Sorry, not enough stock.");
+      return;
+    }
+  } else if (action === 'decrease') {
+    newQty--;
+  }
+
+  if (newQty > 0) {
+    await supabase
+      .from('cart')
+      .update({ quantity: newQty })
+      .eq('cart_id', cartItem.cart_id);
+  } else {
+    const confirmRemove = confirm("Remove item?");
+    if (confirmRemove) {
+      await supabase.from('cart').delete().eq('cart_id', cartItem.cart_id);
+    }
+  }
+}
+
+async function getProductById(id) {
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    console.error('Error fetching product:', error.message);
+    return null;
+  }
+
+  return data;
+}
+
+  function checkout() {
+  if (cartItems.length === 0) {
+    alert("Your cart is empty!");
+    return;
+  }
+  window.location.href = 'checkout.html';
+}
+
+  // Fetch and display products
+  (async () => {
+  const { data: products, error } = await supabase.from('products').select('*');
+
+  if (error) {
+    console.error('Error fetching products:', error.message);
+    return;
+  }
+
+  const currencySelect = document.querySelector("footer select");
+  const selectedCurrency = currencySelect ? currencySelect.value : "MYR";
+
+  const shopSection = document.getElementById("shopProducts");
+  const noProductMessage = document.querySelector('main p');
+
+  if (products.length > 0) {
+    noProductMessage.style.display = 'none';
+
+    shopSection.innerHTML = products.map(product => {
+      const imageUrl = product.image
+        ? (product.image.startsWith('http') ? product.image : `https://i.ibb.co/${product.image}`)
+        : 'images/placeholder.jpg';
+
+      const outOfStock = product.quantity === 0;
+
+      return `
+        <div class="product-card">
+          <img src="${imageUrl}" alt="${product.name}" style="width: 100%; border-radius: 8px;">
+          <h2>${product.name}</h2>
+          <p style="font-weight: bold; color: #333;">${selectedCurrency} ${product.price}</p>
+          <p style="color: #666;">${product.description}</p>
+          <div class="buy-button ${outOfStock ? 'disabled' : ''}" 
+               ${outOfStock ? '' : `onclick='addToCart(${JSON.stringify(product)})'`}>
+            ${outOfStock ? 'Sold Out' : 'BUY'}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+})();
+
+  // Sticky header behavior
+  const header = document.getElementById('mainHeader');
+  const logoImage = document.getElementById('logoImage');
+  const menuToggle = document.getElementById('menuToggle');
+  const mainNav = document.getElementById('mainNav');
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+      header.classList.add('transparent');
+      logoImage.src = 'images/time-logo-black.png';
+      menuToggle.style.color = 'black';
+    } else {
+      header.classList.remove('transparent');
+      logoImage.src = 'images/time-logo-white.png';
+      menuToggle.style.color = 'white';
+    }
+  });
+
+  menuToggle.addEventListener('click', () => {
+    mainNav.classList.toggle('show');
+  });
+</script>
+</body>
+</html>

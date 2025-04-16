@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Cart - Timeless Quest</title>
+
+  <link rel="icon" href="images/favicon.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    main {
+      padding: 40px 10%;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .cart-item h2 {
+      font-size: 18px;
+      margin: 0 0 6px;
+    }
+
+    .quantity-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .quantity-control button {
+      padding: 4px 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .total {
+      text-align: right;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    .checkout-btn {
+      display: block;
+      margin-left: auto;
+      margin-top: 30px;
+      background-color: #111;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .empty-message {
+      text-align: center;
+      color: #666;
+      margin-top: 40px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+<main>
+  <h1>Your Cart</h1>
+  <div id="cartContainer">
+    <p class="empty-message">Loading cart...</p>
+  </div>
+  <div class="total" id="cartTotal"></div>
+  <button class="checkout-btn" onclick="checkout()">Checkout</button>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.0.0/dist/supabase.min.js"></script>
+<script>
+  const SUPABASE_URL = 'https://fbnvobfijhajaafcjvmu.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZibnZvYmZpamhhamFhZmNqdm11Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ2MzMxODEsImV4cCI6MjA2MDIwOTE4MX0.aSKexeuxVT7HFFAZB48-cf2ImE-KrBR5uy95ANDfgGo';
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let userId = localStorage.getItem('guest_user_id');
+  if (!userId) {
+    userId = crypto.randomUUID();
+    localStorage.setItem('guest_user_id', userId);
+  }
+
+  let cartItems = [];
+
+  async function loadCart() {
+    const { data, error } = await supabase
+      .from('cart')
+      .select('*, products(*)')
+      .eq('user_id', userId);
+
+    const container = document.getElementById("cartContainer");
+
+    if (error) {
+      container.innerHTML = `<p class="empty-message">Failed to load cart.</p>`;
+      return;
+    }
+
+    if (data.length === 0) {
+      container.innerHTML = `<p class="empty-message">Your cart is empty.</p>`;
+      document.getElementById("cartTotal").textContent = "";
+      return;
+    }
+
+    cartItems = data;
+
+    container.innerHTML = cartItems.map(item => `
+      <div class="cart-item">
+        <div>
+          <h2>${item.products.name}</h2>
+          <p>Price: RM ${item.products.price.toFixed(2)}</p>
+        </div>
+        <div class="quantity-control">
+          <button onclick="updateQuantity('${item.cart_id}', ${item.quantity - 1})">-</button>
+          <span>${item.quantity}</span>
+          <button onclick="updateQuantity('${item.cart_id}', ${item.quantity + 1})">+</button>
+        </div>
+        <strong>RM ${(item.products.price * item.quantity).toFixed(2)}</strong>
+      </div>
+    `).join('');
+
+    const total = cartItems.reduce((sum, item) => sum + (item.products.price * item.quantity), 0);
+    document.getElementById("cartTotal").textContent = `Total: RM ${total.toFixed(2)}`;
+  }
+
+  async function updateQuantity(cartId, newQty) {
+    if (newQty < 1) {
+      const confirmDelete = confirm("Remove this item from cart?");
+      if (confirmDelete) {
+        await supabase.from('cart').delete().eq('cart_id', cartId);
+        await loadCart();
+      }
+      return;
+    }
+
+    await supabase.from('cart').update({ quantity: newQty }).eq('cart_id', cartId);
+    await loadCart();
+  }
+
+  function checkout() {
+  if (cartItems.length === 0) {
+    alert("Your cart is empty!");
+    return;
+  }
+
+  window.location.href = "checkout.html";
+}
+
+    const { error } = await supabase
+      .from('cart')
+      .delete()
+      .eq('user_id', userId);
+
+    if (error) {
+      alert("Checkout failed. Please try again.");
+      return;
+    }
+
+    alert("Checkout successful! Your cart has been cleared.");
+    window.location.href = "thank-you.html"; // or another page
+  }
+
+  loadCart();
+</script>
+</body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout - Timeless Quest</title>
+    
+  <link rel="icon" href="images/favicon.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .checkout-container {
+      display: flex;
+      justify-content: space-between;
+      padding: 80px 10%;
+      gap: 50px;
+      min-height: 80vh; /* Ensure container takes enough     height */
+}
+
+    .checkout-form {
+      width: 50%;
+      background: #f8f8f8;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: left;
+    }
+
+    .checkout-form h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .checkout-form input,
+    .checkout-form select,
+    .checkout-form button {
+      width: 100% ;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .product-summary {
+  width: 48%; /* Adjust this if necessary */
+  background: #f8f8f8;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: relative; /* This makes sure it's part of the layout */
+}
+
+    .product-summary img {
+      width: 100%;
+      border-radius: 8px;
+    }
+
+    .product-summary h3 {
+      font-size: 22px;
+      margin-top: 20px;
+    }
+
+    .product-summary p {
+      font-size: 16px;
+      color: #555;
+    }
+
+    .product-summary .price {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin-top: 10px;
+    }
+      
+      body {
+  overflow-x: hidden;
+}
+
+footer {
+  margin-bottom: 0 !important;
+}
+
+html, body {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+}
+      
+  @media (max-width: 768px) {
+    .checkout-container {
+    flex-direction: column;
+    padding: 40px 20px;
+  }
+
+  .checkout-form,
+  .product-summary {
+    width: 100%;
+  }
+}  
+  </style>
+</head>
+<body>
+  <header id="mainHeader">
+    <img src="images/time-logo-white.png" alt="Timeless Quest Logo" class="logo" id="logoImage">
+    <div class="menu-toggle" id="menuToggle">☰</div>
+    <nav id="mainNav">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="about-us.html">About Us</a>
+      <a href="TimelessQuest" target="_blank" class="contact-button show-on-mobile">Stay Lit →</a>
+    </nav>  
+    <a href="https://linktr.ee/TimelessQuest" target="_blank" class="contact-button mobile-hide">Stay Lit →</a>
+  </header>
+
+  <div class="spacer"></div>
+
+  <section class="checkout-container">
+    <div class="checkout-form">
+      <h2>Checkout</h2>
+      <form id="checkoutForm">
+        <div class="form-group"><label for="first_name">First Name</label><input type="text" id="first_name" name="first_name" required></div>
+        <div class="form-group"><label for="last_name">Last Name</label><input type="text" id="last_name" name="last_name" required></div>
+        <div class="form-group"><label for="email">Email</label><input type="email" id="email" name="email" required></div>
+        <div class="form-group"><label for="phone">Phone</label><input type="tel" id="phone" name="phone" required></div>
+        <div class="form-group"><label for="address1">Address Line 1</label><input type="text" id="address1" name="address1" required></div>
+        <div class="form-group"><label for="address2">Address Line 2</label><input type="text" id="address2" name="address2"></div>
+        <div class="form-group"><label for="country">Country</label><input type="text" id="country" name="country" required></div>
+        <div class="form-group"><label for="state">State</label><input type="text" id="state" name="state" required></div>
+        <div class="form-group"><label for="city">City</label><input type="text" id="city" name="city" required></div>
+        <div class="form-group"><label for="postcode">Postal Code</label><input type="text" id="postcode" name="postcode" required></div>
+        <button type="button" onclick="onCheckoutButtonClick()">Place Order</button>
+      </form>
+    </div>
+
+    <div class="product-summary">
+      <h3>Your Cart:</h3>
+    </div>
+  </section>
+
+  <footer style="text-align: center; padding: 40px 20px; font-family: 'Poppins', sans-serif; font-size: 14px; color: #111; border-top: 1px solid #eee;">
+    <div style="margin-bottom: 20px;">
+      <select style="padding: 8px 16px; border-radius: 999px; border: 1px solid #111; font-size: 14px; cursor: pointer;">
+        <option value="MYR">MYR</option>
+        <option value="USD">USD</option>
+        <option value="EUR">EUR</option>
+      </select>
+    </div>
+    <p style="margin: 5px 0;">© Timeless Quest 2025</p>
+    <p style="margin-top: 10px; font-weight: 500;">
+      <a href="infy.uk/FAQ.html" style="color: #111; text-decoration: none;">FAQ</a> |
+      <a href="srr.html" style="color: #111; text-decoration: none;">Shipping, Return & Refund Policy</a> |
+      <a href="T&C.html" style="color: #111; text-decoration: none;">Terms and Conditions</a> |
+      <a href="Privacy_policy.html" style="color: #111; text-decoration: none;">Privacy Policy</a>
+    </p>
+  </footer>
+  <script>
+  let cartItems = [];
+
+  async function fetchCartFromDatabase() {
+    try {
+      const response = await fetch('get_cart_items.php');
+      cartItems = await response.json();
+
+      const productSummary = document.querySelector('.product-summary');
+      productSummary.innerHTML = '<h3>Your Cart:</h3>';
+
+      if (cartItems.length > 0) {
+        let subtotal = 0;
+        const shippingFee = 10;
+
+        cartItems.forEach(item => {
+          const itemElement = document.createElement('div');
+          itemElement.classList.add('cart-item');
+
+          subtotal += item.price * item.quantity;
+
+          itemElement.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+              <img src="${item.image}" alt="${item.name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+              <div>
+                <h4 style="margin: 0; font-size: 16px;">${item.name}</h4>
+                <p style="margin: 5px 0; font-size: 14px;">Quantity: ${item.quantity}</p>
+                <p class="price">RM ${(item.price * item.quantity).toFixed(2)}</p>
+              </div>
+            </div>
+          `;
+
+          productSummary.appendChild(itemElement);
+        });
+
+        productSummary.innerHTML += `
+          <div style="text-align: right; font-size: 16px; margin-top: 10px;">+ Shipping Fee: RM ${shippingFee.toFixed(2)}</div>
+          <div class="total-price" style="margin-top: 10px; padding-top: 20px; border-top: 1px solid #ccc; text-align: right; font-size: 18px; font-weight: 700;">
+            Total: RM ${(subtotal + shippingFee).toFixed(2)}
+          </div>
+        `;
+      } else {
+        productSummary.innerHTML += '<p>No items in your cart.</p>';
+      }
+
+    } catch (error) {
+      console.error('Error fetching cart items:', error);
+      document.querySelector('.product-summary').innerHTML += '<p>Failed to load cart.</p>';
+    }
+  }
+
+  function calculateGrandTotal() {
+    let subtotal = 0;
+    const shippingFee = 10;
+
+    cartItems.forEach(item => {
+      subtotal += item.price * item.quantity;
+    });
+
+    return subtotal + shippingFee;
+  }
+
+  async function onCheckoutButtonClick() {
+    if (cartItems.length === 0) {
+      alert("Your cart is empty!");
+      return;
+    }
+
+    const form = document.getElementById('checkoutForm');
+    const formData = new FormData(form);
+
+    const data = {
+      first_name: formData.get('first_name'),
+      last_name: formData.get('last_name'),
+      email: formData.get('email'),
+      phone: formData.get('phone'),
+      address1: formData.get('address1'),
+      address2: formData.get('address2'),
+      country: formData.get('country'),
+      state: formData.get('state'),
+      city: formData.get('city'),
+      postcode: formData.get('postcode'),
+      paid_amount: calculateGrandTotal(),
+      cart: cartItems
+    };
+
+    try {
+      const saveRes = await fetch("save_order_cart.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      const saveData = await saveRes.json();
+
+      if (!saveRes.ok || saveData.status !== 'success') {
+        throw new Error(saveData.details || saveData.error || "Order save failed.");
+      }
+
+      const orderId = saveData.order_id;
+
+      const billRes = await fetch("create_toyyibpay_bill.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: `${data.first_name} ${data.last_name}`,
+          email: data.email,
+          phone: data.phone,
+          amount: data.paid_amount,
+          order_id: orderId
+        })
+      });
+
+      const billData = await billRes.json();
+
+      if (!billRes.ok || !billData.billUrl) {
+        throw new Error(billData.error || "ToyyibPay bill creation failed.");
+      }
+
+      window.location.href = billData.billUrl;
+
+    } catch (error) {
+      console.error("Checkout error:", error);
+      alert("An error occurred: " + error.message);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', fetchCartFromDatabase);
+</script>
+</body>
+</html>

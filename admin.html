@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Developer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body-2>
+  <div class="login-box">
+    <h2>Admin</h2>
+    <input type="password" id="adminPassword" placeholder="Password">
+    <button onclick="checkPassword()">Login</button>
+  </div>
+
+  <script>
+  function checkPassword() {
+    const password = document.getElementById("adminPassword").value;
+    if (password === "lancaubodobabi") {
+      window.location.href = "admin_dashboard.html";
+    } else {
+      alert("Incorrect password!");
+    }
+  }
+</script>
+</body-2>
+</html>
