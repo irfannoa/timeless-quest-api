@@ -159,7 +159,7 @@ html, body {
 
   async function fetchCartFromDatabase() {
     try {
-      const response = await fetch('/api/getCart');
+      const response = await fetch('pages/api/getCart');
       cartItems = await response.json();
 
       const productSummary = document.querySelector('.product-summary');
@@ -241,7 +241,7 @@ html, body {
     };
 
     try {
-      const saveRes = await fetch("/api/saveOrderCart", {
+      const saveRes = await fetch("pages/api/saveOrderCart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
@@ -255,7 +255,7 @@ html, body {
 
       const orderId = saveData.order_id;
 
-      const billRes = await fetch("/api/createBill", {
+      const billRes = await fetch("pages/api/createBill", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
