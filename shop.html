@@ -10,13 +10,27 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.0.0/dist/supabase.min.js"></script>
   <link rel="stylesheet" href="styles.css" />
   <style>
+      header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 5%;
+  background-color: #111;
+  color: white;
+}
+
+.menu-toggle {
+  display: none;
+  font-size: 26px;
+  cursor: pointer;
+  z-index: 10000;
+}
     #shopProducts {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
   padding: 20px 10% 40px;
 }
-
     .product-card {
       background: white;
       padding: 15px;
@@ -87,7 +101,25 @@
   pointer-events: none;
 }
 @media (max-width: 768px) {
+     .menu-toggle {
+    display: block;
+  }
+
   nav {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 60px; /* adjust based on header height */
+    left: 0;
+    right: 0;
+    background-color: #111;
+    z-index: 999;
+  }
+
+  nav.show {
+    display: flex;
+  }
+    nav {
     display: none;
     flex-direction: column;
     width: 100%;
