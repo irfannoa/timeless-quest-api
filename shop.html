@@ -10,20 +10,34 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.0.0/dist/supabase.min.js"></script>
   <link rel="stylesheet" href="styles.css" />
   <style>
-      header {
+  header {
+  position: fixed;
+  top: 20px;
+  background-color: #333;
+  color: white;
+  padding: 20px 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 5%;
-  background-color: #111;
-  color: white;
+  border-radius: 25px;
+  transition: background-color 0.4s ease, box-shadow 0.4s ease, color 0.4s ease;
+  z-index: 1000;
+  max-width: 1500px;
+  width: 90%;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  flex-wrap: wrap;
 }
 
 .menu-toggle {
   display: none;
-  font-size: 26px;
+  font-size: 28px;
   cursor: pointer;
-  z-index: 10000;
+  color: white;
+  z-index: 1100;
+  margin-left: auto;
+  transition: color 0.3s ease;
 }
     #shopProducts {
   display: grid;
@@ -105,15 +119,12 @@
     display: block;
   }
 
-  nav {
+   nav {
     display: none;
     flex-direction: column;
-    position: absolute;
-    top: 60px; /* adjust based on header height */
-    left: 0;
-    right: 0;
-    background-color: #111;
-    z-index: 999;
+    width: 100%;
+    margin-top: 10px;
+    gap: 10px;
   }
 
   nav.show {
