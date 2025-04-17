@@ -31,7 +31,7 @@ export default async function handler(req, res) {
         price: parsedPrice, // Use parsed values here
         image,
         quantity: parsedQuantity, // And here
-        status: 'active'
+        status: 'active',
         description,
       }
     ]);
