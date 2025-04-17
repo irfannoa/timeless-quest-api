@@ -28,6 +28,17 @@ header {
   transition: filter 0.3s ease;
 }
 
+.about-image-wrapper {
+  text-align: center;
+}
+
+.about-image {
+  max-width: 1250px;
+  width: 100%;
+  height: auto;
+  border-radius: 15px;
+}
+
 nav {
   display: flex;
   gap: 30px;
@@ -407,6 +418,19 @@ body-2 {
     display: block;
   }
 
+   .about-image {
+    max-width: 100% !important;
+    width: 100% !important;
+    height: auto;
+    border-radius: 15px;
+  }
+
+  .about-image-wrapper {
+    padding: 0 10px; /* Optional, helps prevent edge touching */
+    box-sizing: border-box;
+    margin-top: 120px;
+  }
+    
   .slider-wrapper {
     width: 100%;
     max-width: 100%;
