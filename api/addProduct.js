@@ -13,6 +13,13 @@ export default async function handler(req, res) {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
+  const parsedPrice = parseFloat(price);
+  const parsedQuantity = parseInt(quantity, 10);
+
+  if (isNaN(parsedPrice) || isNaN(parsedQuantity)) {
+    return res.status(400).json({ message: 'Price and quantity must be valid numbers' });
+  }
+
   const product_id = uuidv4(); // Generate a UUID for product_id
 
   const { data, error } = await supabase
@@ -21,11 +28,11 @@ export default async function handler(req, res) {
       {
         product_id,
         name,
-        price,
+        price: parsedPrice, // Use parsed values here
         image,
-        quantity,
-        description,
+        quantity: parsedQuantity, // And here
         status: 'active'
+        description,
       }
     ]);
 
